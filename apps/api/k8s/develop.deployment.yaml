@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: develop
+  name: api
+  labels:
+    app: api
+spec:
+  selector:
+    matchLabels:
+      app: api
+    template:
+      metadata:
+        namespace: develop
+        labels:
+          app: api
+      spec:
+        containers:
+          - name: api-container
+            image: nito/api-develop:latest
+            ports:
+              - containerPort:3000
+            env:
+              - name: 'NODE_ENV'
+                value: 'develop'
+            livenessProbe:
+              httpGet:
+                path: /api/status
+                port: 3000
+              initialDelaySeconds: 15
+              periodSeconds: 15
+            readinessProbe:
+              httpGet:
+                path: /api/status
+                port: 3000
+              initialDelaySeconds: 45
+              periodSeconds: 45
